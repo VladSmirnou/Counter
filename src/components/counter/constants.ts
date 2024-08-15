@@ -1,0 +1,7 @@
+const MIN_COUNTER_VALUE = 0;
+const MAX_COUNTER_VALUE = 5;
+
+export {
+  MIN_COUNTER_VALUE,
+  MAX_COUNTER_VALUE,
+};
