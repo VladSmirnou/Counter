@@ -22,19 +22,24 @@ function App() {
     }
   );
 
-  let [counterValue, setCounterValue] = useState<number>(
+  const [counterValue, setCounterValue] = useState<number>(
     INITIAL_MIN_COUNTER_VALUE
   );
+  const [settingsModeOn, setSettingsModeOn] = useState<boolean>(false);
 
   return (
     <div className="App">
       <CounterSettings minMaxCounterV={minMaxCounterV}
                        setMinMaxCounterV={setMinMaxCounterV}
                        setCounterValue={setCounterValue}
+                       settingsModeOn={settingsModeOn}
+                       setSettingsModeOn={setSettingsModeOn}
                        />
       <Counter minMaxCounterV={minMaxCounterV}
                counterValue={counterValue}
-               setCounterValue={setCounterValue}/>
+               setCounterValue={setCounterValue}
+               settingsModeOn={settingsModeOn}
+               />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useRef } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 import { Button } from '../button/Button';
 import { minMaxCounterVType } from '../../App';
 
@@ -7,6 +7,8 @@ type CounterSettingsPropsType = {
   minMaxCounterV: minMaxCounterVType
   setMinMaxCounterV: (data: minMaxCounterVType) => void
   setCounterValue: (v: number) => void
+  settingsModeOn: boolean
+  setSettingsModeOn: (v: boolean) => void
 }
 
 export const CounterSettings: React.FC<CounterSettingsPropsType> = (
@@ -16,7 +18,9 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
       maxCounterValue
     },
     setMinMaxCounterV,
-    setCounterValue
+    setCounterValue,
+    settingsModeOn,
+    setSettingsModeOn
   }
 ) => {
   const minValueRef = useRef<HTMLInputElement>(null);
@@ -24,21 +28,24 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
 
   const OnSetMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
     if (maxValueRef.current)
-      maxValueRef.current.value = e.currentTarget.value
+      maxValueRef.current.value = e.currentTarget.value;
+      setSettingsModeOn(true);
   }
 
   const onSetMinValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
     if (minValueRef.current)
-      minValueRef.current.value = e.currentTarget.value
+      minValueRef.current.value = e.currentTarget.value;
+      setSettingsModeOn(true);
   }
 
   const onSetMinMaxCounterHandler = () => {
-    if (minValueRef.current && maxValueRef.current){
+    if (minValueRef.current && maxValueRef.current) {
       setMinMaxCounterV({
         minCounterValue: +minValueRef.current.value,
         maxCounterValue: +maxValueRef.current.value
       })
       setCounterValue(+minValueRef.current.value);
+      setSettingsModeOn(false);
     }
   }
 
@@ -58,9 +65,7 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
                             defaultValue={minCounterValue}
                             />
       </div>
-      <Button callBack={onSetMinMaxCounterHandler}>set</Button>
+      <Button disabled={!settingsModeOn} callBack={onSetMinMaxCounterHandler}>set</Button>
     </div>
   )
 }
-
-
