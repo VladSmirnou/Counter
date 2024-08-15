@@ -1,20 +1,31 @@
 import React, { useState } from 'react';
-import { MIN_COUNTER_VALUE, MAX_COUNTER_VALUE } from './constants';
 import { Button } from '../button/Button';
 import { Scoreboard } from '../scoreboard/Scoreboard';
+import { minMaxCounterVType } from '../../App';
 
 
-export const Counter = () => {
-  const [counterValue, setCounterValue] = useState<number>(
-    MIN_COUNTER_VALUE
-  );
+type CounterPropsType = {
+  minMaxCounterV: minMaxCounterVType
+  counterValue: number
+  setCounterValue: (v: number) => void
+}
 
-  const counterV_lt_MaxV = counterValue < MAX_COUNTER_VALUE;
+export const Counter: React.FC<CounterPropsType> = (
+  {
+    minMaxCounterV: {
+      minCounterValue,
+      maxCounterValue
+    },
+    counterValue,
+    setCounterValue
+  }
+) => {
+  const counterV_lt_MaxV = counterValue < maxCounterValue;
 
   const incrementCounterValue = () => {
     if (counterV_lt_MaxV) setCounterValue(counterValue + 1);
   }
-  const resetCounterValue = () => setCounterValue(MIN_COUNTER_VALUE);
+  const resetCounterValue = () => setCounterValue(minCounterValue);
 
   return (
     <div>
@@ -22,7 +33,7 @@ export const Counter = () => {
       <Button disabled={!counterV_lt_MaxV}
               callBack={incrementCounterValue}
       >inc</Button>
-      <Button disabled={counterValue === MIN_COUNTER_VALUE}
+      <Button disabled={counterValue === minCounterValue}
               callBack={resetCounterValue}
       >reset</Button>
     </div>

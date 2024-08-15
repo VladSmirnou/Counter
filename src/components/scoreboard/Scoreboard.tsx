@@ -15,7 +15,6 @@ export const Scoreboard: React.FC<ScoreboardPropsType> = ({
   if (!counterV_lt_MaxV) {
     finalClassName += ' ' + s.counterV_gte_MaxV
   }
-
   return (
     <p className={finalClassName}>{counterValue}</p>
   )
