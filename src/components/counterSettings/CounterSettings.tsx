@@ -29,30 +29,14 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
 ) => {
   const minValueRef = useRef<HTMLInputElement>(null);
   const maxValueRef = useRef<HTMLInputElement>(null);
- // min: 0 max: 10 - valid
- // min: -1 - invalid
- // min: 3 max: 2 - invalid
- // min: 3 max: 3 - invalid, because it is a no op
-
-  // const currentRefExists = (): boolean => {
-  //   return !!(minValueRef.current && maxValueRef.current);
-  // }
 
   const valuesAreValid = (
     minValue: number, maxValue: number
   ): boolean => {
-    if (minValue < 0) {
+    if (minValue < 0 || minValue > maxValue || minValue === maxValue) {
       setError('Incorrect value!');
       return false;
-    } // set error
-    if (minValue > maxValue) {
-      setError('Incorrect value!');
-      return false; // set error
-    }
-    if (minValue === maxValue) {
-      setError('Incorrect value!');
-      return false; // set error
-    }
+    } 
     setError(null);
     return true;
   }
