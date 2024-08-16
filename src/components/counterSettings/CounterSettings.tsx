@@ -13,6 +13,83 @@ type CounterSettingsPropsType = {
   error: string | null
 }
 
+abstract class OnSet {
+  minValueRef: React.RefObject<HTMLInputElement>;
+  maxValueRef: React.RefObject<HTMLInputElement>;
+  setSettingsModeOn: (v: boolean) => void;
+  setError: (err: string|null) => void;
+
+  constructor(
+    min: React.RefObject<HTMLInputElement>,
+    max: React.RefObject<HTMLInputElement>,
+    setSettingsModeOn: (v: boolean) => void,
+    setError: (err: string|null) => void
+  ) {
+    this.minValueRef = min;
+    this.maxValueRef = max;
+    this.setSettingsModeOn = setSettingsModeOn;
+    this.setError = setError
+  }
+
+  updateCurrentRefValue(
+    value: string
+  ) {
+    if (this.minValueRef.current && this.maxValueRef.current) {  
+      const min = +this.minValueRef.current.value;
+      const max = +this.maxValueRef.current.value;
+      if (this.valuesAreValid(min, max)) {
+        this.updateRefValue(value);
+        this.setSettingsModeOn(true);
+      }
+    }
+  }
+
+  valuesAreValid(minValue: number, maxValue: number): boolean {
+    if (minValue < 0 || minValue > maxValue || minValue === maxValue) {
+      this.setError('Incorrect value!');
+      return false;
+    } 
+    this.setError(null);
+    return true;
+  }
+
+  abstract updateRefValue(value: string): void;
+}
+
+class OnSetMin extends OnSet {
+  constructor(
+    min: React.RefObject<HTMLInputElement>,
+    max: React.RefObject<HTMLInputElement>,
+    setSettingsModeOn: (v: boolean) => void,
+    setError: (err: string|null) => void
+  ) {
+    super(min, max, setSettingsModeOn, setError);
+  }
+
+  updateRefValue(value: string) {
+    if(this.minValueRef.current) {
+      this.minValueRef.current.value = value;
+    }
+  }
+}
+
+class OnSetMax extends OnSet {
+  constructor(
+    min: React.RefObject<HTMLInputElement>,
+    max: React.RefObject<HTMLInputElement>,
+    setSettingsModeOn: (v: boolean) => void,
+    setError: (err: string|null) => void
+  ) {
+    super(min, max, setSettingsModeOn, setError);
+  }
+
+  updateRefValue(value: string) {
+    if(this.maxValueRef.current) {
+      this.maxValueRef.current.value = value;
+    }
+  }
+}
+
 export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   {
     minMaxCounterV: {
@@ -30,37 +107,18 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   const minValueRef = useRef<HTMLInputElement>(null);
   const maxValueRef = useRef<HTMLInputElement>(null);
 
-  const valuesAreValid = (
-    minValue: number, maxValue: number
-  ): boolean => {
-    if (minValue < 0 || minValue > maxValue || minValue === maxValue) {
-      setError('Incorrect value!');
-      return false;
-    } 
-    setError(null);
-    return true;
-  }
-
   const OnSetMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    if (minValueRef.current && maxValueRef.current) {  
-      const min = +minValueRef.current.value;
-      const max = +maxValueRef.current.value;
-      if (valuesAreValid(min, max)) {
-        maxValueRef.current.value = e.currentTarget.value;
-        setSettingsModeOn(true);
-      }
-    }
+    const maxVal = new OnSetMax(
+      minValueRef, maxValueRef, setSettingsModeOn, setError
+    )
+    maxVal.updateCurrentRefValue(e.currentTarget.value);
   }
 
   const onSetMinValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    if (minValueRef.current && maxValueRef.current) {
-      const min = +minValueRef.current.value;
-      const max = +maxValueRef.current.value;
-      if (valuesAreValid(min, max)) {
-        minValueRef.current.value = e.currentTarget.value;
-        setSettingsModeOn(true);
-      }
-    }
+    const minVal = new OnSetMin(
+      minValueRef, maxValueRef, setSettingsModeOn, setError
+    )
+    minVal.updateCurrentRefValue(e.currentTarget.value);
   }
 
   const onSetMinMaxCounterHandler = () => {
