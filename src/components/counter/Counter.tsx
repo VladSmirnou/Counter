@@ -9,6 +9,7 @@ type CounterPropsType = {
   counterValue: number
   setCounterValue: (v: number) => void
   settingsModeOn: boolean
+  error: string | null
 }
 
 export const Counter: React.FC<CounterPropsType> = (
@@ -19,7 +20,8 @@ export const Counter: React.FC<CounterPropsType> = (
     },
     counterValue,
     setCounterValue,
-    settingsModeOn
+    settingsModeOn,
+    error
   }
 ) => {
   const counterV_lt_MaxV = counterValue < maxCounterValue;
@@ -34,11 +36,12 @@ export const Counter: React.FC<CounterPropsType> = (
       <Scoreboard counterValue={counterValue}
                   counterV_lt_MaxV={counterV_lt_MaxV}
                   settingsModeOn={settingsModeOn}
+                  error={error}
                   />
-      <Button disabled={!counterV_lt_MaxV || settingsModeOn}
+      <Button disabled={!counterV_lt_MaxV || !!error || settingsModeOn}
               callBack={incrementCounterValue}
       >inc</Button>
-      <Button disabled={counterValue === minCounterValue || settingsModeOn}
+      <Button disabled={counterValue === minCounterValue || !!error || settingsModeOn}
               callBack={resetCounterValue}
       >reset</Button>
     </div>

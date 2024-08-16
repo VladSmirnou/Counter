@@ -26,6 +26,7 @@ function App() {
     INITIAL_MIN_COUNTER_VALUE
   );
   const [settingsModeOn, setSettingsModeOn] = useState<boolean>(false);
+  const [error, setError] = useState<string|null>(null);
 
   return (
     <div className="App">
@@ -34,11 +35,14 @@ function App() {
                        setCounterValue={setCounterValue}
                        settingsModeOn={settingsModeOn}
                        setSettingsModeOn={setSettingsModeOn}
+                       setError={setError}
+                       error={error}
                        />
       <Counter minMaxCounterV={minMaxCounterV}
                counterValue={counterValue}
                setCounterValue={setCounterValue}
                settingsModeOn={settingsModeOn}
+               error={error}
                />
     </div>
   );
