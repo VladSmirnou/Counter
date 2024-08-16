@@ -5,6 +5,7 @@ import { CounterSettings } from './components/counterSettings/CounterSettings';
 import './App.css';
 
 
+
 export type minMaxCounterVType = {
   minCounterValue: number
   maxCounterValue: number
@@ -27,7 +28,6 @@ function App() {
   );
   const [settingsModeOn, setSettingsModeOn] = useState<boolean>(false);
   const [error, setError] = useState<string|null>(null);
-
   return (
     <div className="App">
       <CounterSettings minMaxCounterV={minMaxCounterV}

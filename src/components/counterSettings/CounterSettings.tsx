@@ -1,7 +1,10 @@
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { ChangeEvent, useRef } from 'react';
+import s from './counterSettings.module.css';
 import { Button } from '../button/Button';
 import { minMaxCounterVType } from '../../App';
 
+
+const INCORRECT_VALUE_ERROR_TEXT = 'Incorrect value!';
 
 type CounterSettingsPropsType = {
   minMaxCounterV: minMaxCounterVType
@@ -13,9 +16,12 @@ type CounterSettingsPropsType = {
   error: string | null
 }
 
+type IncorrectFieldName = 'min' | 'max' | 'both';
+
 abstract class OnSet {
   minValueRef: React.RefObject<HTMLInputElement>;
   maxValueRef: React.RefObject<HTMLInputElement>;
+  incorrectField: React.MutableRefObject<IncorrectFieldName | null>;
   setSettingsModeOn: (v: boolean) => void;
   setError: (err: string|null) => void;
 
@@ -23,12 +29,14 @@ abstract class OnSet {
     min: React.RefObject<HTMLInputElement>,
     max: React.RefObject<HTMLInputElement>,
     setSettingsModeOn: (v: boolean) => void,
-    setError: (err: string|null) => void
+    setError: (err: string|null) => void,
+    incorrectField: React.RefObject<IncorrectFieldName | null>
   ) {
     this.minValueRef = min;
     this.maxValueRef = max;
     this.setSettingsModeOn = setSettingsModeOn;
     this.setError = setError
+    this.incorrectField = incorrectField
   }
 
   updateCurrentRefValue(
@@ -40,16 +48,26 @@ abstract class OnSet {
       if (this.valuesAreValid(min, max)) {
         this.updateRefValue(value);
         this.setSettingsModeOn(true);
+        this.incorrectField.current = null; 
+        this.setError(null);
+      } else {
+        this.setError(INCORRECT_VALUE_ERROR_TEXT);
       }
     }
   }
 
   valuesAreValid(minValue: number, maxValue: number): boolean {
-    if (minValue < 0 || minValue > maxValue || minValue === maxValue) {
-      this.setError('Incorrect value!');
+    if (minValue < 0) {
+      this.incorrectField.current = 'min'; 
+      return false;
+    } else if(minValue > maxValue) {
+      this.incorrectField.current = 'max'; 
       return false;
     } 
-    this.setError(null);
+    else if (minValue === maxValue) {
+      this.incorrectField.current = 'both'; 
+      return false;
+    }
     return true;
   }
 
@@ -61,9 +79,10 @@ class OnSetMin extends OnSet {
     min: React.RefObject<HTMLInputElement>,
     max: React.RefObject<HTMLInputElement>,
     setSettingsModeOn: (v: boolean) => void,
-    setError: (err: string|null) => void
+    setError: (err: string | null) => void,
+    incorrectField: React.MutableRefObject<IncorrectFieldName | null>
   ) {
-    super(min, max, setSettingsModeOn, setError);
+    super(min, max, setSettingsModeOn, setError, incorrectField);
   }
 
   updateRefValue(value: string) {
@@ -78,9 +97,10 @@ class OnSetMax extends OnSet {
     min: React.RefObject<HTMLInputElement>,
     max: React.RefObject<HTMLInputElement>,
     setSettingsModeOn: (v: boolean) => void,
-    setError: (err: string|null) => void
+    setError: (err: string|null) => void,
+    incorrectField: React.MutableRefObject<IncorrectFieldName | null>
   ) {
-    super(min, max, setSettingsModeOn, setError);
+    super(min, max, setSettingsModeOn, setError, incorrectField);
   }
 
   updateRefValue(value: string) {
@@ -104,19 +124,29 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
     error
   }
 ) => {
+  console.log('rendering Counter');
   const minValueRef = useRef<HTMLInputElement>(null);
   const maxValueRef = useRef<HTMLInputElement>(null);
+  const incorrectField = useRef<IncorrectFieldName | null>(null);
 
   const OnSetMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const maxVal = new OnSetMax(
-      minValueRef, maxValueRef, setSettingsModeOn, setError
+      minValueRef,
+      maxValueRef,
+      setSettingsModeOn,
+      setError,
+      incorrectField
     )
     maxVal.updateCurrentRefValue(e.currentTarget.value);
   }
 
   const onSetMinValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const minVal = new OnSetMin(
-      minValueRef, maxValueRef, setSettingsModeOn, setError
+      minValueRef,
+      maxValueRef,
+      setSettingsModeOn,
+      setError,
+      incorrectField
     )
     minVal.updateCurrentRefValue(e.currentTarget.value);
   }
@@ -131,7 +161,9 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
       setSettingsModeOn(false);
     }
   }
-
+  const setButtonDisabled = !settingsModeOn || !!error;
+  const incorrectFieldName = incorrectField.current;
+  
   return (
     <div>
       <div>
@@ -139,6 +171,7 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
                           ref={maxValueRef}
                           onChange={OnSetMaxValueHandler}
                           defaultValue={maxCounterValue}
+                          className={incorrectFieldName === 'max' || incorrectFieldName === 'both' ? s.incorrect : ''}
                           />
       </div>
       <div>
@@ -146,9 +179,10 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
                             ref={minValueRef}
                             onChange={onSetMinValueHandler}
                             defaultValue={minCounterValue}
+                            className={incorrectFieldName === 'min' || incorrectFieldName === 'both' ? s.incorrect : ''}
                             />
       </div>
-      <Button disabled={!settingsModeOn || !!error} callBack={onSetMinMaxCounterHandler}>set</Button>
+      <Button disabled={setButtonDisabled} callBack={onSetMinMaxCounterHandler}>set</Button>
     </div>
   )
 }

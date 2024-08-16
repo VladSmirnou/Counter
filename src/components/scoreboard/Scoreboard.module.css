@@ -5,3 +5,12 @@
 .counterV_gte_MaxV {
   color: red;
 }
+
+.settingsModeOn {
+  color: blue;
+  font-weight: bold;
+}
+
+.error {
+  color: red
+}

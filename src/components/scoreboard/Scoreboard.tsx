@@ -1,5 +1,6 @@
 import React from 'react';
 import s from './Scoreboard.module.css';
+import { classNameBuilder } from '../../utils/classNameBulder';
 
 
 type ScoreboardPropsType = {
@@ -9,21 +10,28 @@ type ScoreboardPropsType = {
   error: string | null
 }
 
+const SETTINGS_MODE_ON_TEXT = "enter values and press 'set'";
+
 export const Scoreboard: React.FC<ScoreboardPropsType> = ({
   counterValue,
   counterV_lt_MaxV,
   settingsModeOn,
   error
 }) => {
-  let finalClassName = s.counterVinRange
-  if (!counterV_lt_MaxV) {
-    finalClassName += ' ' + s.counterV_gte_MaxV
-  }
+
+  const builder = new classNameBuilder;
+  
+  if (!counterV_lt_MaxV && !settingsModeOn) builder.addClass(s.counterV_gte_MaxV);
+  else if (settingsModeOn && !error) builder.addClass(s.settingsModeOn);
+  else if (error) builder.addClass(s.error);
+  else builder.addClass(s.counterVinRange);
+
+  const finalClassName = builder.build();
+  const scoreBoardText = error ? error
+    : settingsModeOn ? SETTINGS_MODE_ON_TEXT
+    : counterValue;
+
   return (
-    <p className={finalClassName}>{
-      error ? error
-        : settingsModeOn ? "enter values and press 'set'"
-        : counterValue
-    }</p>
+    <p className={finalClassName}>{scoreBoardText}</p>
   )
 }

@@ -31,6 +31,11 @@ export const Counter: React.FC<CounterPropsType> = (
   }
   const resetCounterValue = () => setCounterValue(minCounterValue);
 
+  const predicate = (() => !!error || settingsModeOn)();
+
+  const incButtonDisabled = !counterV_lt_MaxV || predicate;
+  const resetButtonDisabled = counterValue === minCounterValue || predicate;
+
   return (
     <div>
       <Scoreboard counterValue={counterValue}
@@ -38,10 +43,10 @@ export const Counter: React.FC<CounterPropsType> = (
                   settingsModeOn={settingsModeOn}
                   error={error}
                   />
-      <Button disabled={!counterV_lt_MaxV || !!error || settingsModeOn}
+      <Button disabled={incButtonDisabled}
               callBack={incrementCounterValue}
       >inc</Button>
-      <Button disabled={counterValue === minCounterValue || !!error || settingsModeOn}
+      <Button disabled={resetButtonDisabled}
               callBack={resetCounterValue}
       >reset</Button>
     </div>
