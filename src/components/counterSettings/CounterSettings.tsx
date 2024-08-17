@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useRef } from 'react';
+import React, { ChangeEvent, RefObject, useEffect, useRef } from 'react';
 import s from './counterSettings.module.css';
 import { Button } from '../button/Button';
 import { minMaxCounterVType } from '../../App';
@@ -176,13 +176,25 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
     settingsModeOn,
     setSettingsModeOn,
     setError,
-    error
+    error,
   }
 ) => {
-
   const minValueRef = useRef<HTMLInputElement>(null);
   const maxValueRef = useRef<HTMLInputElement>(null);
   const incorrectField = useRef<IncorrectFieldName | null>(null);
+
+  useEffect(() => {
+    const storedValues = localStorage.getItem('storedValues');
+    if (storedValues) {
+      const {minCounterValue, maxCounterValue} = JSON.parse(storedValues);
+      if (minValueRef.current && maxValueRef.current) {
+        minValueRef.current.value = minCounterValue;
+        maxValueRef.current.value = maxCounterValue;
+      }
+      setMinMaxCounterV({minCounterValue, maxCounterValue});
+      setCounterValue(minCounterValue);
+    }
+  }, []);
 
   const OnSetMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const maxVal = new OnSetMax(
@@ -209,16 +221,18 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   const onSetMinMaxCounterHandler = () => {
     if (minValueRef.current && maxValueRef.current) {
       setCounterValue(+minValueRef.current.value);
-      setMinMaxCounterV({
+      const minMaxValues = {
         minCounterValue: +minValueRef.current.value,
         maxCounterValue: +maxValueRef.current.value
-      });
+      }
+      setMinMaxCounterV(minMaxValues);
       setSettingsModeOn(false);
+      localStorage.setItem('storedValues', JSON.stringify(minMaxValues))
     }
   }
   const setButtonDisabled = !settingsModeOn || !!error;
   const incorrectFieldName = incorrectField.current;
-  
+
   return (
     <div className={s.counterSettingsBlock}>
       <div className={s.flexWrapper}>
