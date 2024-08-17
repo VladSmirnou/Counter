@@ -18,6 +18,79 @@ type CounterSettingsPropsType = {
 
 type IncorrectFieldName = 'min' | 'max' | 'both';
 
+interface Validator {
+  validateValues(minValue: number, maxValue: number): boolean;
+  getIncorrectFieldName(): IncorrectFieldName;
+}
+
+class RunValueValidators {
+  validators: Array<Validator>;
+
+  constructor(classes: Array<Validator>) {
+    this.validators = classes;
+  }
+
+  validate(
+    validator: Validator,
+    minValue: number,
+    maxValue: number
+  ): IncorrectFieldName | undefined {
+    const valuesAreValid = validator.validateValues(minValue, maxValue);
+    if(!valuesAreValid) return validator.getIncorrectFieldName();
+    return;
+  }
+}
+
+class ValidateMin implements Validator {
+  incorrectFieldName: IncorrectFieldName = 'min';
+
+  validateValues(minValue: number, maxValue: number): boolean {
+    if (minValue < 0) return false
+    return true
+  }
+
+  getIncorrectFieldName() {
+    return this.incorrectFieldName;
+  }
+}
+
+class ValidateMax implements Validator {
+  incorrectFieldName: IncorrectFieldName = 'max';
+
+  validateValues(minValue: number, maxValue: number): boolean {
+    if (minValue > maxValue) return false
+    return true
+  }
+
+  getIncorrectFieldName() {
+    return this.incorrectFieldName;
+  }
+}
+
+class ValidateBoth implements Validator {
+  incorrectFieldName: IncorrectFieldName = 'both';
+
+  validateValues(minValue: number, maxValue: number): boolean {
+    if (minValue === maxValue) return false
+    return true
+  }
+
+  getIncorrectFieldName() {
+    return this.incorrectFieldName;
+  }
+}
+
+const validateMinObj: Validator = new ValidateMin;
+const validateMaxObj: Validator = new ValidateMax;
+const validateBothObj: Validator = new ValidateBoth;
+const validationRunner = new RunValueValidators(
+  [
+    validateMinObj,
+    validateMaxObj,
+    validateBothObj
+  ]
+);
+
 abstract class OnSet {
   minValueRef: React.RefObject<HTMLInputElement>;
   maxValueRef: React.RefObject<HTMLInputElement>;
@@ -54,19 +127,23 @@ abstract class OnSet {
     }
   }
 
+  check(predicate: any, incorrectFieldName: string) {
+    if (predicate()) return incorrectFieldName;
+  }
+
   valuesAreValid(minValue: number, maxValue: number): boolean {
-    if (minValue < 0) {
-      this.incorrectField.current = 'min'; 
-      return false;
-    } else if(minValue > maxValue) {
-      this.incorrectField.current = 'max'; 
-      return false;
-    } 
-    else if (minValue === maxValue) {
-      this.incorrectField.current = 'both'; 
-      return false;
+    for (const validator of validationRunner.validators) {
+      const invalidField = validationRunner.validate(
+        validator,
+        minValue,
+        maxValue
+      );
+      if (invalidField) {
+        this.incorrectField.current = invalidField;
+        return false
+      }
     }
-    return true;
+    return true
   }
 
   abstract updateRefValue(value: string): void;
@@ -74,7 +151,7 @@ abstract class OnSet {
 
 class OnSetMin extends OnSet {
   updateRefValue(value: string) {
-    if(this.minValueRef.current) {
+    if (this.minValueRef.current) {
       this.minValueRef.current.value = value;
     }
   }
@@ -82,7 +159,7 @@ class OnSetMin extends OnSet {
 
 class OnSetMax extends OnSet {
   updateRefValue(value: string) {
-    if(this.maxValueRef.current) {
+    if (this.maxValueRef.current) {
       this.maxValueRef.current.value = value;
     }
   }
