@@ -39,9 +39,7 @@ abstract class OnSet {
     this.incorrectField = incorrectField
   }
 
-  updateCurrentRefValue(
-    value: string
-  ) {
+  updateCurrentRefValue(value: string) {
     if (this.minValueRef.current && this.maxValueRef.current) {  
       const min = +this.minValueRef.current.value;
       const max = +this.maxValueRef.current.value;
@@ -75,16 +73,6 @@ abstract class OnSet {
 }
 
 class OnSetMin extends OnSet {
-  constructor(
-    min: React.RefObject<HTMLInputElement>,
-    max: React.RefObject<HTMLInputElement>,
-    setSettingsModeOn: (v: boolean) => void,
-    setError: (err: string | null) => void,
-    incorrectField: React.MutableRefObject<IncorrectFieldName | null>
-  ) {
-    super(min, max, setSettingsModeOn, setError, incorrectField);
-  }
-
   updateRefValue(value: string) {
     if(this.minValueRef.current) {
       this.minValueRef.current.value = value;
@@ -93,16 +81,6 @@ class OnSetMin extends OnSet {
 }
 
 class OnSetMax extends OnSet {
-  constructor(
-    min: React.RefObject<HTMLInputElement>,
-    max: React.RefObject<HTMLInputElement>,
-    setSettingsModeOn: (v: boolean) => void,
-    setError: (err: string|null) => void,
-    incorrectField: React.MutableRefObject<IncorrectFieldName | null>
-  ) {
-    super(min, max, setSettingsModeOn, setError, incorrectField);
-  }
-
   updateRefValue(value: string) {
     if(this.maxValueRef.current) {
       this.maxValueRef.current.value = value;
@@ -124,7 +102,7 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
     error
   }
 ) => {
-  console.log('rendering Counter');
+
   const minValueRef = useRef<HTMLInputElement>(null);
   const maxValueRef = useRef<HTMLInputElement>(null);
   const incorrectField = useRef<IncorrectFieldName | null>(null);
@@ -165,24 +143,28 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   const incorrectFieldName = incorrectField.current;
   
   return (
-    <div>
-      <div>
-        max value: <input type={'number'}
-                          ref={maxValueRef}
-                          onChange={OnSetMaxValueHandler}
-                          defaultValue={maxCounterValue}
-                          className={incorrectFieldName === 'max' || incorrectFieldName === 'both' ? s.incorrect : ''}
-                          />
-      </div>
-      <div>
-        start value: <input type={'number'}
-                            ref={minValueRef}
-                            onChange={onSetMinValueHandler}
-                            defaultValue={minCounterValue}
-                            className={incorrectFieldName === 'min' || incorrectFieldName === 'both' ? s.incorrect : ''}
+    <div className={s.counterSettingsBlock}>
+      <div className={s.flexWrapper}>
+        <div className={s.inputAndLabel}>
+          <span className={s.inputLabel}>max value: </span><input type={'number'}
+                            ref={maxValueRef}
+                            onChange={OnSetMaxValueHandler}
+                            defaultValue={maxCounterValue}
+                            className={incorrectFieldName === 'max' || incorrectFieldName === 'both' ? s.incorrect : ''}
                             />
+        </div>
+        <div className={s.inputAndLabel}>
+          <span className={s.inputLabel}>start value: </span><input type={'number'}
+                              ref={minValueRef}
+                              onChange={onSetMinValueHandler}
+                              defaultValue={minCounterValue}
+                              className={incorrectFieldName === 'min' || incorrectFieldName === 'both' ? s.incorrect : ''}
+                              />
+        </div>
       </div>
-      <Button disabled={setButtonDisabled} callBack={onSetMinMaxCounterHandler}>set</Button>
+      <div className={s.buttonWrapper}>
+        <Button disabled={setButtonDisabled} callBack={onSetMinMaxCounterHandler}>set</Button>
+      </div>
     </div>
   )
 }

@@ -20,11 +20,11 @@ export const Scoreboard: React.FC<ScoreboardPropsType> = ({
 }) => {
 
   const builder = new classNameBuilder;
-  
+  builder.addClass(s.default);
+
   if (!counterV_lt_MaxV && !settingsModeOn) builder.addClass(s.counterV_gte_MaxV);
   else if (settingsModeOn && !error) builder.addClass(s.settingsModeOn);
   else if (error) builder.addClass(s.error);
-  else builder.addClass(s.counterVinRange);
 
   const finalClassName = builder.build();
   const scoreBoardText = error ? error

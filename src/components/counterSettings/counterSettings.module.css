@@ -2,3 +2,58 @@
   border: 2px solid red;
   background-color: lightpink;
 }
+
+.flexWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  justify-content: space-evenly;
+  border: 2px solid aquamarine;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.counterSettingsBlock {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  row-gap: 20px;
+  border-radius: 15px;
+}
+
+.buttonWrapper {
+  padding: 20px;
+  border: 2px solid aquamarine;
+  border-radius: 15px;
+}
+
+.buttonWrapper > button {
+  border: none;
+  border-radius: 10px;
+  display: block;
+  margin: 0 auto;
+  font-weight: bold;
+  font-size: 40px;
+  background-color: aquamarine;
+  padding: 0 20px;
+}
+
+.inputLabel {
+  font-size: 30px;
+  font-weight: bold;
+  color: aquamarine;
+}
+
+.inputAndLabel {
+  display: flex;
+  justify-content: space-between;
+}
+
+input {
+  text-align: center;
+  font-weight: bold;
+  font-size: 15px;
+  border-radius: 5px;
+  outline: 2px solid aquamarine;
+  border: none;
+}

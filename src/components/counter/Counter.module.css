@@ -1,0 +1,25 @@
+.counter {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 20px;
+  row-gap: 20px;
+  border-radius: 15px;
+}
+
+.flexWrapper {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px 0;
+  border: 2px solid aquamarine;
+  border-radius: 15px;
+}
+
+.flexWrapper > button {
+  font-weight: bold;
+  font-size: 40px;
+  padding: 0 20px;
+  background-color: aquamarine;
+  border: none;
+  border-radius: 10px;
+}

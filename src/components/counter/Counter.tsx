@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../button/Button';
 import { Scoreboard } from '../scoreboard/Scoreboard';
 import { minMaxCounterVType } from '../../App';
+import s from './Counter.module.css';
 
 
 type CounterPropsType = {
@@ -31,24 +32,26 @@ export const Counter: React.FC<CounterPropsType> = (
   }
   const resetCounterValue = () => setCounterValue(minCounterValue);
 
-  const predicate = (() => !!error || settingsModeOn)();
+  const predicate =  !!error || settingsModeOn;
 
   const incButtonDisabled = !counterV_lt_MaxV || predicate;
   const resetButtonDisabled = counterValue === minCounterValue || predicate;
 
   return (
-    <div>
+    <div className={s.counter}>
       <Scoreboard counterValue={counterValue}
                   counterV_lt_MaxV={counterV_lt_MaxV}
                   settingsModeOn={settingsModeOn}
                   error={error}
                   />
-      <Button disabled={incButtonDisabled}
-              callBack={incrementCounterValue}
-      >inc</Button>
-      <Button disabled={resetButtonDisabled}
-              callBack={resetCounterValue}
-      >reset</Button>
+      <div className={s.flexWrapper}>
+        <Button disabled={incButtonDisabled}
+                callBack={incrementCounterValue}
+        >inc</Button>
+        <Button disabled={resetButtonDisabled}
+                callBack={resetCounterValue}
+        >reset</Button>
+      </div>
     </div>
   )
 }

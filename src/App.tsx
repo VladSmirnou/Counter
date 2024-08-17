@@ -30,20 +30,22 @@ function App() {
   const [error, setError] = useState<string|null>(null);
   return (
     <div className="App">
-      <CounterSettings minMaxCounterV={minMaxCounterV}
-                       setMinMaxCounterV={setMinMaxCounterV}
-                       setCounterValue={setCounterValue}
-                       settingsModeOn={settingsModeOn}
-                       setSettingsModeOn={setSettingsModeOn}
-                       setError={setError}
-                       error={error}
-                       />
-      <Counter minMaxCounterV={minMaxCounterV}
-               counterValue={counterValue}
-               setCounterValue={setCounterValue}
-               settingsModeOn={settingsModeOn}
-               error={error}
-               />
+      <div className='counterBlock'>
+        <CounterSettings minMaxCounterV={minMaxCounterV}
+                        setMinMaxCounterV={setMinMaxCounterV}
+                        setCounterValue={setCounterValue}
+                        settingsModeOn={settingsModeOn}
+                        setSettingsModeOn={setSettingsModeOn}
+                        setError={setError}
+                        error={error}
+                        />
+        <Counter minMaxCounterV={minMaxCounterV}
+                counterValue={counterValue}
+                setCounterValue={setCounterValue}
+                settingsModeOn={settingsModeOn}
+                error={error}
+                />
+      </div>
     </div>
   );
 }
