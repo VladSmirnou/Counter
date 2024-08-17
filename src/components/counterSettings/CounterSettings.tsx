@@ -1,22 +1,18 @@
-import React, { ChangeEvent, RefObject, useEffect, useRef } from 'react';
+import React, { ChangeEvent, useEffect, useRef } from 'react';
 import s from './counterSettings.module.css';
 import { Button } from '../button/Button';
-import { minMaxCounterVType } from '../../App';
+import {
+  MIN,
+  MAX,
+  BOTH,
+  INCORRECT_VALUE_ERROR_TEXT,
+  STORED_VALUES
+} from './constants';
+import {
+  IncorrectFieldName,
+  CounterSettingsPropsType
+} from './counterSettingsTypes';
 
-
-const INCORRECT_VALUE_ERROR_TEXT = 'Incorrect value!';
-
-type CounterSettingsPropsType = {
-  minMaxCounterV: minMaxCounterVType
-  setMinMaxCounterV: (data: minMaxCounterVType) => void
-  setCounterValue: (v: number) => void
-  settingsModeOn: boolean
-  setSettingsModeOn: (v: boolean) => void
-  setError: (err: string|null) => void
-  error: string | null
-}
-
-type IncorrectFieldName = 'min' | 'max' | 'both';
 
 interface Validator {
   validateValues(minValue: number, maxValue: number): boolean;
@@ -42,7 +38,7 @@ class RunValueValidators {
 }
 
 class ValidateMin implements Validator {
-  incorrectFieldName: IncorrectFieldName = 'min';
+  incorrectFieldName: IncorrectFieldName = MIN;
 
   validateValues(minValue: number, maxValue: number): boolean {
     if (minValue < 0) return false
@@ -55,7 +51,7 @@ class ValidateMin implements Validator {
 }
 
 class ValidateMax implements Validator {
-  incorrectFieldName: IncorrectFieldName = 'max';
+  incorrectFieldName: IncorrectFieldName = MAX;
 
   validateValues(minValue: number, maxValue: number): boolean {
     if (minValue > maxValue) return false
@@ -68,7 +64,7 @@ class ValidateMax implements Validator {
 }
 
 class ValidateBoth implements Validator {
-  incorrectFieldName: IncorrectFieldName = 'both';
+  incorrectFieldName: IncorrectFieldName = BOTH;
 
   validateValues(minValue: number, maxValue: number): boolean {
     if (minValue === maxValue) return false
@@ -184,7 +180,7 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   const incorrectField = useRef<IncorrectFieldName | null>(null);
 
   useEffect(() => {
-    const storedValues = localStorage.getItem('storedValues');
+    const storedValues = localStorage.getItem(STORED_VALUES);
     if (storedValues) {
       const {minCounterValue, maxCounterValue} = JSON.parse(storedValues);
       if (minValueRef.current && maxValueRef.current) {
@@ -227,11 +223,22 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
       }
       setMinMaxCounterV(minMaxValues);
       setSettingsModeOn(false);
-      localStorage.setItem('storedValues', JSON.stringify(minMaxValues))
+      localStorage.setItem(STORED_VALUES, JSON.stringify(minMaxValues))
     }
   }
   const setButtonDisabled = !settingsModeOn || !!error;
+
   const incorrectFieldName = incorrectField.current;
+  let maxInputClass: string = '';
+  let minInputClass: string = '';
+  if (incorrectFieldName === BOTH) {
+    maxInputClass = s.incorrect;
+    minInputClass = s.incorrect;
+  } else if (incorrectFieldName === MAX) {
+    maxInputClass = s.incorrect;
+  } else if (incorrectFieldName === MIN) {
+    minInputClass = s.incorrect;
+  }
 
   return (
     <div className={s.counterSettingsBlock}>
@@ -241,7 +248,7 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
                             ref={maxValueRef}
                             onChange={OnSetMaxValueHandler}
                             defaultValue={maxCounterValue}
-                            className={incorrectFieldName === 'max' || incorrectFieldName === 'both' ? s.incorrect : ''}
+                            className={maxInputClass}
                             />
         </div>
         <div className={s.inputAndLabel}>
@@ -249,7 +256,7 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
                               ref={minValueRef}
                               onChange={onSetMinValueHandler}
                               defaultValue={minCounterValue}
-                              className={incorrectFieldName === 'min' || incorrectFieldName === 'both' ? s.incorrect : ''}
+                              className={minInputClass}
                               />
         </div>
       </div>

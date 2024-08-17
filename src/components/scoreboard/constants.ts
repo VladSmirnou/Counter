@@ -1,0 +1,1 @@
+export const SETTINGS_MODE_ON_TEXT = "enter values and press 'set'";

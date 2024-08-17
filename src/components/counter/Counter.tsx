@@ -1,17 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '../button/Button';
 import { Scoreboard } from '../scoreboard/Scoreboard';
-import { minMaxCounterVType } from '../../App';
 import s from './Counter.module.css';
+import { CounterPropsType } from './counterTypes';
 
-
-type CounterPropsType = {
-  minMaxCounterV: minMaxCounterVType
-  counterValue: number
-  setCounterValue: (v: number) => void
-  settingsModeOn: boolean
-  error: string | null
-}
 
 export const Counter: React.FC<CounterPropsType> = (
   {

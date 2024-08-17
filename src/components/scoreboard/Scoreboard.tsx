@@ -1,16 +1,8 @@
 import React from 'react';
 import s from './Scoreboard.module.css';
 import { classNameBuilder } from '../../utils/classNameBulder';
-
-
-type ScoreboardPropsType = {
-  counterValue: number
-  counterV_lt_MaxV: boolean
-  settingsModeOn: boolean
-  error: string | null
-}
-
-const SETTINGS_MODE_ON_TEXT = "enter values and press 'set'";
+import {SETTINGS_MODE_ON_TEXT} from './constants';
+import { ScoreboardPropsType } from './scoreboardTypes';
 
 export const Scoreboard: React.FC<ScoreboardPropsType> = ({
   counterValue,
@@ -18,7 +10,6 @@ export const Scoreboard: React.FC<ScoreboardPropsType> = ({
   settingsModeOn,
   error
 }) => {
-
   const builder = new classNameBuilder;
   builder.addClass(s.default);
 

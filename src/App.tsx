@@ -1,21 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import { Counter } from './components/counter/Counter';
 import { CounterSettings } from './components/counterSettings/CounterSettings';
 import './App.css';
-
-
-
-export type minMaxCounterVType = {
-  minCounterValue: number
-  maxCounterValue: number
-}
-
-const INITIAL_MIN_COUNTER_VALUE = 0;
-const INITIAL_MAX_COUNTER_VALUE = 5;
+import {
+  INITIAL_MAX_COUNTER_VALUE,
+  INITIAL_MIN_COUNTER_VALUE
+} from './constants';
+import { MinMaxCounterVType } from './appTypes';
 
 function App() {
-  const [minMaxCounterV, setMinMaxCounterV] = useState<minMaxCounterVType>(
+  const [minMaxCounterV, setMinMaxCounterV] = useState<MinMaxCounterVType>(
     {
       minCounterValue: INITIAL_MIN_COUNTER_VALUE,
       maxCounterValue: INITIAL_MAX_COUNTER_VALUE
