@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Counter } from './components/counter/Counter';
 import { CounterSettings } from './components/counterSettings/CounterSettings';
 import './App.css';
@@ -14,8 +14,9 @@ import { IncorrectFieldName } from './components/counterSettings/counterSettings
 import { ValidateMin } from './utils/validators/valueValidators/validateMin';
 import { ValidateMax } from './utils/validators/valueValidators/validateMax';
 import { ValidateBoth } from './utils/validators/valueValidators/validateBoth';
-import { MIN, MAX, BOTH } from './components/counterSettings/constants';
+import { MIN, MAX, BOTH, STORED_VALUES } from './components/counterSettings/constants';
 import { MIN_ALLOWED_VALUE } from './utils/validators/valueValidators/constants';
+import { LocalStorageRepo } from './repo/localStorageRepo';
 
 const validatorRunner = new valueValidatorRunner([
   new ValidateMin(MIN, MIN_ALLOWED_VALUE),
@@ -23,8 +24,28 @@ const validatorRunner = new valueValidatorRunner([
   new ValidateBoth(BOTH)
 ])
 
+const repoObj = new LocalStorageRepo;
+
 function App() {
-  
+  const minValueRef = useRef<HTMLInputElement>(null);
+  const maxValueRef = useRef<HTMLInputElement>(null);
+  const incorrectField = useRef<IncorrectFieldName | null>(null);
+
+  useEffect(() => {
+    const storedValues = repoObj.getItem(STORED_VALUES);
+    if (storedValues) {
+      const {minCounterValue, maxCounterValue} = JSON.parse(storedValues);
+      // should check if parsed values are numbers or not,
+      // and throw here.
+      if (minValueRef.current && maxValueRef.current) {
+        minValueRef.current.value = minCounterValue;
+        maxValueRef.current.value = maxCounterValue;
+      }
+      setMinMaxCounterV({minCounterValue, maxCounterValue});
+      setCounterValue(minCounterValue);
+    }
+  }, []);
+
   const [minMaxCounterV, setMinMaxCounterV] = useState<MinMaxCounterVType>(
     {
       minCounterValue: INITIAL_MIN_COUNTER_VALUE,
@@ -38,11 +59,7 @@ function App() {
   const [settingsModeOn, setSettingsModeOn] = useState<boolean>(false);
   const [error, setError] = useState<string|null>(null);
 
-  const onChangeMaxHandlerWrapper = (
-    minValueRef: React.RefObject<HTMLInputElement>,
-    maxValueRef: React.RefObject<HTMLInputElement>,
-    incorrectField: React.MutableRefObject<IncorrectFieldName | null>
-  ) => {
+  const onChangeMaxHandlerWrapper = () => {
     return new OnChangeMax(
       minValueRef,
       maxValueRef,
@@ -53,11 +70,7 @@ function App() {
     )
   }
 
-  const onChangeMinHandlerWrapper = (
-    minValueRef: React.RefObject<HTMLInputElement>,
-    maxValueRef: React.RefObject<HTMLInputElement>,
-    incorrectField: React.MutableRefObject<IncorrectFieldName | null>
-  ) => {
+  const onChangeMinHandlerWrapper = () => {
     return new OnChangeMin(
       minValueRef,
       maxValueRef,
@@ -79,6 +92,10 @@ function App() {
                         error={error}
                         onChangeMaxHandlerWrapper={onChangeMaxHandlerWrapper}
                         onChangeMinHandlerWrapper={onChangeMinHandlerWrapper}
+                        repo={repoObj}
+                        minValueRef={minValueRef}
+                        maxValueRef={maxValueRef}
+                        incorrectField={incorrectField}
                         />
         <Counter minMaxCounterV={minMaxCounterV}
                 counterValue={counterValue}

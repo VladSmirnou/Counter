@@ -9,7 +9,7 @@ export class ValidateMax implements Validator {
     }
 
     validateValues(minValue: number, maxValue: number): boolean {
-      return !(minValue > maxValue);
+      return minValue > maxValue;
     }
   
     getIncorrectFieldName() {

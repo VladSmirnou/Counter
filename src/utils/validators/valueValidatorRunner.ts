@@ -14,8 +14,8 @@ export class valueValidatorRunner implements ValidatorRunner {
         maxValue: number
     ): IncorrectFieldName | undefined {
       for (const validator of this.validators) {
-          const valuesAreValid = validator.validateValues(minValue, maxValue);
-          if(!valuesAreValid) return validator.getIncorrectFieldName();
+          const valuesAreInvalid = validator.validateValues(minValue, maxValue);
+          if (valuesAreInvalid) return validator.getIncorrectFieldName();
       }
       return;
     }

@@ -1,11 +1,8 @@
-import React, { ChangeEvent, useEffect, useRef } from 'react';
+import React, { ChangeEvent } from 'react';
 import s from './counterSettings.module.css';
 import { Button } from '../button/Button';
 import { MIN, MAX, BOTH, STORED_VALUES } from './constants';
-import {
-  IncorrectFieldName,
-  CounterSettingsPropsType
-} from './counterSettingsTypes';
+import { CounterSettingsPropsType } from './counterSettingsTypes';
 
 export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   {
@@ -19,41 +16,21 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
     setSettingsModeOn,
     error,
     onChangeMinHandlerWrapper,
-    onChangeMaxHandlerWrapper
+    onChangeMaxHandlerWrapper,
+    repo,
+    minValueRef,
+    maxValueRef,
+    incorrectField
   }
 ) => {
-  const minValueRef = useRef<HTMLInputElement>(null);
-  const maxValueRef = useRef<HTMLInputElement>(null);
-  const incorrectField = useRef<IncorrectFieldName | null>(null);
-
-  useEffect(() => {
-    const storedValues = localStorage.getItem(STORED_VALUES);
-    if (storedValues) {
-      const {minCounterValue, maxCounterValue} = JSON.parse(storedValues);
-      if (minValueRef.current && maxValueRef.current) {
-        minValueRef.current.value = minCounterValue;
-        maxValueRef.current.value = maxCounterValue;
-      }
-      setMinMaxCounterV({minCounterValue, maxCounterValue});
-      setCounterValue(minCounterValue);
-    }
-  }, []);
 
   const onChangeMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const handler = onChangeMaxHandlerWrapper(
-      minValueRef,
-      maxValueRef,
-      incorrectField
-    )
+    const handler = onChangeMaxHandlerWrapper();
     handler.updateCurrentRefValue(e.currentTarget.value);
   }
 
   const onChangeMinValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const handler = onChangeMinHandlerWrapper(
-      minValueRef,
-      maxValueRef,
-      incorrectField
-    )
+    const handler = onChangeMinHandlerWrapper();
     handler.updateCurrentRefValue(e.currentTarget.value);
   }
 
@@ -66,11 +43,12 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
       }
       setMinMaxCounterV(minMaxValues);
       setSettingsModeOn(false);
-      localStorage.setItem(STORED_VALUES, JSON.stringify(minMaxValues))
+      repo.setItem(STORED_VALUES, minMaxValues)
     }
   }
   const setButtonDisabled = !settingsModeOn || !!error;
 
+  // TODO: refactor later
   const incorrectFieldName = incorrectField.current;
   let maxInputClass: string = '';
   let minInputClass: string = '';

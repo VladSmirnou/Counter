@@ -9,10 +9,10 @@ export class ValidateMin implements Validator {
         this.lowestAllowedValue = lowestAllVal;
     }
     // Don't wanna separate this check from the others
-    // now, even tho it is slightly different from,
+    // now, even tho it is slightly different,
     // and 'maxValue' is unused.
     validateValues(minValue: number, maxValue: number): boolean {
-      return !(minValue < this.lowestAllowedValue);
+      return minValue < this.lowestAllowedValue;
     }
   
     getIncorrectFieldName() {
