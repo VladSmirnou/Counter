@@ -1,3 +1,4 @@
+import { RefObject } from 'react';
 import { MinMaxCounterVType } from '../../appTypes';
 import { MIN, MAX, BOTH } from './constants';
 import { OnChange } from './onChangeHandlers/onChangeABC';
@@ -21,8 +22,10 @@ export type CounterSettingsPropsType = {
         incorrectField: React.MutableRefObject<IncorrectFieldName | null>
     ) => OnChange
     repo: Repo
+    minValueRef: RefObject<HTMLInputElement>
+    maxValueRef: RefObject<HTMLInputElement>
 }
-  
+
 export type IncorrectFieldName = (
     typeof MIN |
     typeof MAX |

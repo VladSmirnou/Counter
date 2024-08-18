@@ -6,4 +6,5 @@ export type CounterPropsType = {
     setCounterValue: (v: number) => void
     settingsModeOn: boolean
     error: string | null
+    setSettingsModeOn:(v: boolean) => void
 }

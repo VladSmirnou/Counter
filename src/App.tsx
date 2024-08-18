@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Counter } from './components/counter/Counter';
 import { CounterSettings } from './components/counterSettings/CounterSettings';
 import './App.css';
@@ -14,7 +14,7 @@ import { IncorrectFieldName } from './components/counterSettings/counterSettings
 import { ValidateMin } from './utils/validators/valueValidators/validateMin';
 import { ValidateMax } from './utils/validators/valueValidators/validateMax';
 import { ValidateBoth } from './utils/validators/valueValidators/validateBoth';
-import { MIN, MAX, BOTH } from './components/counterSettings/constants';
+import { MIN, MAX, BOTH, STORED_VALUES } from './components/counterSettings/constants';
 import { MIN_ALLOWED_VALUE } from './utils/validators/valueValidators/constants';
 import { LocalStorageRepo } from './repo/localStorageRepo';
 
@@ -27,7 +27,24 @@ const validatorRunner = new valueValidatorRunner([
 const repoObj = new LocalStorageRepo;
 
 function App() {
-  
+  const minValueRef = useRef<HTMLInputElement>(null);
+  const maxValueRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const storedValues = repoObj.getItem(STORED_VALUES);
+    if (storedValues) {
+      const {minCounterValue, maxCounterValue} = JSON.parse(storedValues);
+      // should check if parsed values are numbers or not,
+      // and throw here.
+      if (minValueRef.current && maxValueRef.current) {
+        minValueRef.current.value = minCounterValue;
+        maxValueRef.current.value = maxCounterValue;
+      }
+      setMinMaxCounterV({minCounterValue, maxCounterValue});
+      setCounterValue(minCounterValue);
+    }
+  }, []);
+
   const [minMaxCounterV, setMinMaxCounterV] = useState<MinMaxCounterVType>(
     {
       minCounterValue: INITIAL_MIN_COUNTER_VALUE,
@@ -74,7 +91,8 @@ function App() {
   return (
     <div className="App">
       <div className='counterBlock'>
-        <CounterSettings minMaxCounterV={minMaxCounterV}
+        {settingsModeOn ?
+          <CounterSettings minMaxCounterV={minMaxCounterV}
                         setMinMaxCounterV={setMinMaxCounterV}
                         setCounterValue={setCounterValue}
                         settingsModeOn={settingsModeOn}
@@ -83,13 +101,18 @@ function App() {
                         onChangeMaxHandlerWrapper={onChangeMaxHandlerWrapper}
                         onChangeMinHandlerWrapper={onChangeMinHandlerWrapper}
                         repo={repoObj}
+                        minValueRef={minValueRef}
+                        maxValueRef={maxValueRef}
                         />
-        <Counter minMaxCounterV={minMaxCounterV}
-                counterValue={counterValue}
-                setCounterValue={setCounterValue}
-                settingsModeOn={settingsModeOn}
-                error={error}
-                />
+          : <Counter minMaxCounterV={minMaxCounterV}
+                     counterValue={counterValue}
+                     setCounterValue={setCounterValue}
+                     settingsModeOn={settingsModeOn}
+                     error={error}
+                     setSettingsModeOn={setSettingsModeOn}
+                     />
+        }
+        
       </div>
     </div>
   );

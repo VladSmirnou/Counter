@@ -14,7 +14,8 @@ export const Counter: React.FC<CounterPropsType> = (
     counterValue,
     setCounterValue,
     settingsModeOn,
-    error
+    error,
+    setSettingsModeOn
   }
 ) => {
   const counterV_lt_MaxV = counterValue < maxCounterValue;
@@ -28,6 +29,7 @@ export const Counter: React.FC<CounterPropsType> = (
 
   const incButtonDisabled = !counterV_lt_MaxV || predicate;
   const resetButtonDisabled = counterValue === minCounterValue || predicate;
+  const onsetSettingsModeOnHandler = () => setSettingsModeOn(!settingsModeOn);
 
   return (
     <div className={s.counter}>
@@ -43,6 +45,9 @@ export const Counter: React.FC<CounterPropsType> = (
         <Button disabled={resetButtonDisabled}
                 callBack={resetCounterValue}
         >reset</Button>
+        <Button disabled={settingsModeOn}
+                callBack={onsetSettingsModeOnHandler}
+        >set</Button>
       </div>
     </div>
   )

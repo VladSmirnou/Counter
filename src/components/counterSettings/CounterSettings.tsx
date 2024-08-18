@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef } from 'react';
+import React, { ChangeEvent, useRef } from 'react';
 import s from './counterSettings.module.css';
 import { Button } from '../button/Button';
 import { MIN, MAX, BOTH, STORED_VALUES } from './constants';
@@ -20,27 +20,12 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
     error,
     onChangeMinHandlerWrapper,
     onChangeMaxHandlerWrapper,
-    repo
+    repo,
+    minValueRef,
+    maxValueRef
   }
 ) => {
-  const minValueRef = useRef<HTMLInputElement>(null);
-  const maxValueRef = useRef<HTMLInputElement>(null);
   const incorrectField = useRef<IncorrectFieldName | null>(null);
-
-  useEffect(() => {
-    const storedValues = repo.getItem(STORED_VALUES);
-    if (storedValues) {
-      const {minCounterValue, maxCounterValue} = JSON.parse(storedValues);
-      // should check if parsed values are numbers or not,
-      // and throw here.
-      if (minValueRef.current && maxValueRef.current) {
-        minValueRef.current.value = minCounterValue;
-        maxValueRef.current.value = maxCounterValue;
-      }
-      setMinMaxCounterV({minCounterValue, maxCounterValue});
-      setCounterValue(minCounterValue);
-    }
-  }, []);
 
   const onChangeMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const handler = onChangeMaxHandlerWrapper(
