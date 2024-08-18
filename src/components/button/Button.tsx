@@ -1,9 +1,4 @@
-import React, { ButtonHTMLAttributes } from 'react';
-
-
-type ButtonPropsType = ButtonHTMLAttributes<HTMLButtonElement> & {
-  callBack: () => void
-}
+import { ButtonPropsType } from "./buttonTypes"
 
 export const Button: React.FC<ButtonPropsType> = ({
   callBack,

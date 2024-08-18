@@ -16,12 +16,15 @@ import { ValidateMax } from './utils/validators/valueValidators/validateMax';
 import { ValidateBoth } from './utils/validators/valueValidators/validateBoth';
 import { MIN, MAX, BOTH } from './components/counterSettings/constants';
 import { MIN_ALLOWED_VALUE } from './utils/validators/valueValidators/constants';
+import { LocalStorageRepo } from './repo/localStorageRepo';
 
 const validatorRunner = new valueValidatorRunner([
   new ValidateMin(MIN, MIN_ALLOWED_VALUE),
   new ValidateMax(MAX),
   new ValidateBoth(BOTH)
 ])
+
+const repoObj = new LocalStorageRepo;
 
 function App() {
   
@@ -79,6 +82,7 @@ function App() {
                         error={error}
                         onChangeMaxHandlerWrapper={onChangeMaxHandlerWrapper}
                         onChangeMinHandlerWrapper={onChangeMinHandlerWrapper}
+                        repo={repoObj}
                         />
         <Counter minMaxCounterV={minMaxCounterV}
                 counterValue={counterValue}
