@@ -19,7 +19,8 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
     setSettingsModeOn,
     error,
     onChangeMinHandlerWrapper,
-    onChangeMaxHandlerWrapper
+    onChangeMaxHandlerWrapper,
+    repo
   }
 ) => {
   const minValueRef = useRef<HTMLInputElement>(null);
@@ -27,9 +28,11 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   const incorrectField = useRef<IncorrectFieldName | null>(null);
 
   useEffect(() => {
-    const storedValues = localStorage.getItem(STORED_VALUES);
+    const storedValues = repo.getItem(STORED_VALUES);
     if (storedValues) {
       const {minCounterValue, maxCounterValue} = JSON.parse(storedValues);
+      // should check if parsed values are numbers or not,
+      // and throw here.
       if (minValueRef.current && maxValueRef.current) {
         minValueRef.current.value = minCounterValue;
         maxValueRef.current.value = maxCounterValue;
@@ -66,11 +69,12 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
       }
       setMinMaxCounterV(minMaxValues);
       setSettingsModeOn(false);
-      localStorage.setItem(STORED_VALUES, JSON.stringify(minMaxValues))
+      repo.setItem(STORED_VALUES, minMaxValues)
     }
   }
   const setButtonDisabled = !settingsModeOn || !!error;
 
+  // TODO: refactor later
   const incorrectFieldName = incorrectField.current;
   let maxInputClass: string = '';
   let minInputClass: string = '';
