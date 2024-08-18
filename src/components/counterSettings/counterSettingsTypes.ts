@@ -1,5 +1,6 @@
 import { MinMaxCounterVType } from '../../appTypes';
 import { MIN, MAX, BOTH } from './constants';
+import { OnChange } from './onChangeHandlers/onChangeABC';
 
 export type CounterSettingsPropsType = {
     minMaxCounterV: MinMaxCounterVType
@@ -7,8 +8,17 @@ export type CounterSettingsPropsType = {
     setCounterValue: (v: number) => void
     settingsModeOn: boolean
     setSettingsModeOn: (v: boolean) => void
-    setError: (err: string|null) => void
     error: string | null
+    onChangeMaxHandlerWrapper: (
+        minValueRef: React.RefObject<HTMLInputElement>,
+        maxValueRef: React.RefObject<HTMLInputElement>,
+        incorrectField: React.MutableRefObject<IncorrectFieldName | null>
+    ) => OnChange
+    onChangeMinHandlerWrapper: (
+        minValueRef: React.RefObject<HTMLInputElement>,
+        maxValueRef: React.RefObject<HTMLInputElement>,
+        incorrectField: React.MutableRefObject<IncorrectFieldName | null>
+    ) => OnChange
 }
   
 export type IncorrectFieldName = (
@@ -16,5 +26,3 @@ export type IncorrectFieldName = (
     typeof MAX |
     typeof BOTH
 );
-
-  

@@ -9,5 +9,5 @@ export {
     MAX,
     MIN,
     BOTH,
-    STORED_VALUES
+    STORED_VALUES,
 }
