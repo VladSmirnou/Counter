@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '../button/Button';
 import { Scoreboard } from '../scoreboard/Scoreboard';
 import s from './Counter.module.css';
@@ -11,12 +11,17 @@ export const Counter: React.FC<CounterPropsType> = (
       minCounterValue,
       maxCounterValue
     },
-    counterValue,
-    setCounterValue,
     settingsModeOn,
-    error
+    error,
   }
 ) => {
+  const [counterValue, setCounterValue] = useState<number>(minCounterValue);
+
+  useEffect(() => {
+    console.log('counter')
+    setCounterValue(minCounterValue);
+  }, [minCounterValue]);
+
   const counterV_lt_MaxV = counterValue < maxCounterValue;
 
   const incrementCounterValue = () => {
@@ -24,7 +29,7 @@ export const Counter: React.FC<CounterPropsType> = (
   }
   const resetCounterValue = () => setCounterValue(minCounterValue);
 
-  const predicate =  !!error || settingsModeOn;
+  const predicate = settingsModeOn || !!error;
 
   const incButtonDisabled = !counterV_lt_MaxV || predicate;
   const resetButtonDisabled = counterValue === minCounterValue || predicate;

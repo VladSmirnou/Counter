@@ -11,7 +11,6 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
       maxCounterValue
     },
     setMinMaxCounterV,
-    setCounterValue,
     settingsModeOn,
     setSettingsModeOn,
     error,
@@ -20,7 +19,7 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
     repo,
     minValueRef,
     maxValueRef,
-    incorrectField
+    incorrectField,
   }
 ) => {
 
@@ -36,7 +35,6 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
 
   const onSetMinMaxCounterHandler = () => {
     if (minValueRef.current && maxValueRef.current) {
-      setCounterValue(+minValueRef.current.value);
       const minMaxValues = {
         minCounterValue: +minValueRef.current.value,
         maxCounterValue: +maxValueRef.current.value

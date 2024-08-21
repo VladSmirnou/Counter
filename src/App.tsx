@@ -27,6 +27,7 @@ const validatorRunner = new valueValidatorRunner([
 const repoObj = new LocalStorageRepo;
 
 function App() {
+  console.log('hello world')
   const minValueRef = useRef<HTMLInputElement>(null);
   const maxValueRef = useRef<HTMLInputElement>(null);
   const incorrectField = useRef<IncorrectFieldName | null>(null);
@@ -42,7 +43,6 @@ function App() {
         maxValueRef.current.value = maxCounterValue;
       }
       setMinMaxCounterV({minCounterValue, maxCounterValue});
-      setCounterValue(minCounterValue);
     }
   }, []);
 
@@ -53,9 +53,6 @@ function App() {
     }
   );
 
-  const [counterValue, setCounterValue] = useState<number>(
-    INITIAL_MIN_COUNTER_VALUE
-  );
   const [settingsModeOn, setSettingsModeOn] = useState<boolean>(false);
   const [error, setError] = useState<string|null>(null);
 
@@ -86,7 +83,6 @@ function App() {
       <div className='counterBlock'>
         <CounterSettings minMaxCounterV={minMaxCounterV}
                         setMinMaxCounterV={setMinMaxCounterV}
-                        setCounterValue={setCounterValue}
                         settingsModeOn={settingsModeOn}
                         setSettingsModeOn={setSettingsModeOn}
                         error={error}
@@ -98,8 +94,6 @@ function App() {
                         incorrectField={incorrectField}
                         />
         <Counter minMaxCounterV={minMaxCounterV}
-                counterValue={counterValue}
-                setCounterValue={setCounterValue}
                 settingsModeOn={settingsModeOn}
                 error={error}
                 />
