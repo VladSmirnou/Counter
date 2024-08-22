@@ -18,17 +18,16 @@ export const Counter: React.FC<CounterPropsType> = (
   const [counterValue, setCounterValue] = useState<number>(minCounterValue);
 
   useEffect(() => {
-    console.log('counter')
     setCounterValue(minCounterValue);
   }, [minCounterValue]);
-
-  const counterV_lt_MaxV = counterValue < maxCounterValue;
 
   const incrementCounterValue = () => {
     if (counterV_lt_MaxV) setCounterValue(counterValue + 1);
   }
   const resetCounterValue = () => setCounterValue(minCounterValue);
 
+  const counterV_lt_MaxV = counterValue < maxCounterValue;
+  
   const predicate = settingsModeOn || !!error;
 
   const incButtonDisabled = !counterV_lt_MaxV || predicate;

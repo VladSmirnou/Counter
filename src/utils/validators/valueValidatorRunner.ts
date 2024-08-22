@@ -1,6 +1,6 @@
 import { Validator } from "./valueValidatorInterface";
 import { IncorrectFieldName } from "../../components/counterSettings/counterSettingsTypes";
-import { ValidatorRunner } from "../../components/counterSettings/onChangeHandlers/validatorRunnerInt";
+import { ValidatorRunner } from "../../components/counterSettings/validatorRunnerInt";
 
 export class valueValidatorRunner implements ValidatorRunner {
     validators: Array<Validator>;

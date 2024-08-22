@@ -7,8 +7,6 @@ import {
   INITIAL_MIN_COUNTER_VALUE
 } from './constants';
 import { MinMaxCounterVType } from './appTypes';
-import { OnChangeMin } from './components/counterSettings/onChangeHandlers/handlers/onChangeMinHandler';
-import { OnChangeMax } from './components/counterSettings/onChangeHandlers/handlers/onChangeMaxHandler';
 import { valueValidatorRunner } from './utils/validators/valueValidatorRunner';
 import { IncorrectFieldName } from './components/counterSettings/counterSettingsTypes';
 import { ValidateMin } from './utils/validators/valueValidators/validateMin';
@@ -26,22 +24,18 @@ const validatorRunner = new valueValidatorRunner([
 
 const repoObj = new LocalStorageRepo;
 
-function App() {
-  console.log('hello world')
-  const minValueRef = useRef<HTMLInputElement>(null);
-  const maxValueRef = useRef<HTMLInputElement>(null);
-  const incorrectField = useRef<IncorrectFieldName | null>(null);
+export type ErrorType = {
+  error: string
+  incorrectFieldName: IncorrectFieldName
+}
 
+function App() {
   useEffect(() => {
     const storedValues = repoObj.getItem(STORED_VALUES);
     if (storedValues) {
       const {minCounterValue, maxCounterValue} = JSON.parse(storedValues);
       // should check if parsed values are numbers or not,
       // and throw here.
-      if (minValueRef.current && maxValueRef.current) {
-        minValueRef.current.value = minCounterValue;
-        maxValueRef.current.value = maxCounterValue;
-      }
       setMinMaxCounterV({minCounterValue, maxCounterValue});
     }
   }, []);
@@ -54,29 +48,7 @@ function App() {
   );
 
   const [settingsModeOn, setSettingsModeOn] = useState<boolean>(false);
-  const [error, setError] = useState<string|null>(null);
-
-  const onChangeMaxHandlerWrapper = () => {
-    return new OnChangeMax(
-      minValueRef,
-      maxValueRef,
-      incorrectField,
-      validatorRunner,
-      setSettingsModeOn,
-      setError,
-    )
-  }
-
-  const onChangeMinHandlerWrapper = () => {
-    return new OnChangeMin(
-      minValueRef,
-      maxValueRef,
-      incorrectField,
-      validatorRunner,
-      setSettingsModeOn,
-      setError,
-    )
-  }
+  const [errorData, setErrorData] = useState<ErrorType|null>(null);
 
   return (
     <div className="App">
@@ -85,17 +57,14 @@ function App() {
                         setMinMaxCounterV={setMinMaxCounterV}
                         settingsModeOn={settingsModeOn}
                         setSettingsModeOn={setSettingsModeOn}
-                        error={error}
-                        onChangeMaxHandlerWrapper={onChangeMaxHandlerWrapper}
-                        onChangeMinHandlerWrapper={onChangeMinHandlerWrapper}
                         repo={repoObj}
-                        minValueRef={minValueRef}
-                        maxValueRef={maxValueRef}
-                        incorrectField={incorrectField}
+                        incorrectFieldName={errorData?.incorrectFieldName}
+                        setErrorData={setErrorData}
+                        validatorRunner={validatorRunner}
                         />
         <Counter minMaxCounterV={minMaxCounterV}
                 settingsModeOn={settingsModeOn}
-                error={error}
+                error={errorData?.error}
                 />
       </div>
     </div>

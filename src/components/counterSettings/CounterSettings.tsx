@@ -1,53 +1,64 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import s from './counterSettings.module.css';
 import { Button } from '../button/Button';
 import { MIN, MAX, BOTH, STORED_VALUES } from './constants';
 import { CounterSettingsPropsType } from './counterSettingsTypes';
+import { MinMaxCounterVType } from '../../appTypes';
+import { INCORRECT_VALUE_ERROR_TEXT } from './constants';
+import { IncorrectFieldName } from './counterSettingsTypes';
 
 export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   {
-    minMaxCounterV: {
-      minCounterValue,
-      maxCounterValue
-    },
+    minMaxCounterV,
     setMinMaxCounterV,
     settingsModeOn,
     setSettingsModeOn,
-    error,
-    onChangeMinHandlerWrapper,
-    onChangeMaxHandlerWrapper,
     repo,
-    minValueRef,
-    maxValueRef,
-    incorrectField,
+    incorrectFieldName,
+    setErrorData,
+    validatorRunner
   }
 ) => {
+  const [minMaxValues, setMinMaxValues] = useState<MinMaxCounterVType>(
+    minMaxCounterV
+  );
 
-  const onChangeMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const handler = onChangeMaxHandlerWrapper();
-    handler.updateCurrentRefValue(e.currentTarget.value);
-  }
+  useEffect(() => {
+    setMinMaxValues(minMaxCounterV);
+  }, [minMaxCounterV]);
 
-  const onChangeMinValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const handler = onChangeMinHandlerWrapper();
-    handler.updateCurrentRefValue(e.currentTarget.value);
+  const onChangeMinMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const nextMinMaxValues = {
+      ...minMaxValues,
+      [e.currentTarget.name === 'min' ? 'minCounterValue'
+        : 'maxCounterValue']: +e.currentTarget.value
+    }
+
+    const incorrectFieldName = validatorRunner.validate(
+      nextMinMaxValues.minCounterValue, nextMinMaxValues.maxCounterValue
+    )
+    if (incorrectFieldName) {
+      setErrorData({
+        error: INCORRECT_VALUE_ERROR_TEXT,
+        incorrectFieldName: incorrectFieldName === BOTH ? incorrectFieldName
+          : e.currentTarget.name as IncorrectFieldName
+      })
+    } else {
+      setErrorData(null);
+      setSettingsModeOn(true);
+    }
+    setMinMaxValues(nextMinMaxValues);
   }
 
   const onSetMinMaxCounterHandler = () => {
-    if (minValueRef.current && maxValueRef.current) {
-      const minMaxValues = {
-        minCounterValue: +minValueRef.current.value,
-        maxCounterValue: +maxValueRef.current.value
-      }
       setMinMaxCounterV(minMaxValues);
       setSettingsModeOn(false);
-      repo.setItem(STORED_VALUES, minMaxValues)
-    }
+      repo.setItem(STORED_VALUES, minMaxValues);
   }
-  const setButtonDisabled = !settingsModeOn || !!error;
+
+  const setButtonDisabled = !settingsModeOn || !!incorrectFieldName;
 
   // TODO: refactor later
-  const incorrectFieldName = incorrectField.current;
   let maxInputClass: string = '';
   let minInputClass: string = '';
   if (incorrectFieldName === BOTH) {
@@ -64,18 +75,18 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
       <div className={s.flexWrapper}>
         <div className={s.inputAndLabel}>
           <span className={s.inputLabel}>max value: </span><input type={'number'}
-                            ref={maxValueRef}
-                            onChange={onChangeMaxValueHandler}
-                            defaultValue={maxCounterValue}
+                            value={minMaxValues.maxCounterValue}
+                            onChange={onChangeMinMaxValueHandler}
                             className={maxInputClass}
+                            name='max'
                             />
         </div>
         <div className={s.inputAndLabel}>
           <span className={s.inputLabel}>start value: </span><input type={'number'}
-                              ref={minValueRef}
-                              onChange={onChangeMinValueHandler}
-                              defaultValue={minCounterValue}
+                              value={minMaxValues.minCounterValue}
+                              onChange={onChangeMinMaxValueHandler}
                               className={minInputClass}
+                              name='min'
                               />
         </div>
       </div>

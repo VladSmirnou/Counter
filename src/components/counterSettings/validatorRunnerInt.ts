@@ -1,4 +1,4 @@
-import { IncorrectFieldName } from "../counterSettingsTypes"
+import { IncorrectFieldName } from "./counterSettingsTypes"
 
 export interface ValidatorRunner {
     validate(
