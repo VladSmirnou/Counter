@@ -3,17 +3,19 @@ import { IncorrectFieldName } from "../../../components/counterSettings/counterS
 
 export class ValidateBoth implements Validator {
     incorrectFieldName: IncorrectFieldName;
-  
-    constructor(incFieldName: IncorrectFieldName) {
+    errorText: string;
+
+    constructor(incFieldName: IncorrectFieldName, errorText: string) {
         this.incorrectFieldName = incFieldName;
+        this.errorText = errorText;
     }
 
     validateValues(minValue: number, maxValue: number): boolean {
       return minValue === maxValue;
     }
   
-    getIncorrectFieldName() {
-      return this.incorrectFieldName;
+    getIncorrectFieldNameAndErrorText(): [IncorrectFieldName, string] {
+      return [this.incorrectFieldName, this.errorText];
     }
 }
   

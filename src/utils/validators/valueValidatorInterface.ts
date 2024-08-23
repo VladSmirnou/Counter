@@ -2,5 +2,5 @@ import { IncorrectFieldName } from "../../components/counterSettings/counterSett
 
 export interface Validator {
     validateValues(minValue: number, maxValue: number): boolean;
-    getIncorrectFieldName(): IncorrectFieldName;
+    getIncorrectFieldNameAndErrorText(): [IncorrectFieldName, string];
 }

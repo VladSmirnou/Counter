@@ -4,8 +4,6 @@ import { Button } from '../button/Button';
 import { MIN, MAX, BOTH, STORED_VALUES } from './constants';
 import { CounterSettingsPropsType } from './counterSettingsTypes';
 import { MinMaxCounterVType } from '../../appTypes';
-import { INCORRECT_VALUE_ERROR_TEXT } from './constants';
-import { IncorrectFieldName } from './counterSettingsTypes';
 
 export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   {
@@ -33,21 +31,23 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   const onChangeMinMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const nextMinMaxValues = {
       ...minMaxValues,
-      [e.currentTarget.name === 'min' ? 'minCounterValue'
+      [e.currentTarget.name === MIN ? 'minCounterValue'
         : 'maxCounterValue']: +e.currentTarget.value
     }
 
-    const incorrectFieldName = validatorRunner.validate(
+    const incorrectFieldData = validatorRunner.validate(
       nextMinMaxValues.minCounterValue, nextMinMaxValues.maxCounterValue
     )
-    if (incorrectFieldName && reRenderedOnce.current) {
+
+    if (incorrectFieldData && reRenderedOnce.current) {
       return;
     }
-    else if (incorrectFieldName && !reRenderedOnce.current) {
+    else if (incorrectFieldData && !reRenderedOnce.current) {
+      const [incorrectFieldName, errorText] = incorrectFieldData;
+
       setErrorData({
-        error: INCORRECT_VALUE_ERROR_TEXT,
-        incorrectFieldName: incorrectFieldName === BOTH ? incorrectFieldName
-          : e.currentTarget.name as IncorrectFieldName
+        error: errorText,
+        incorrectFieldName: incorrectFieldName
       })
       setMinMaxValues(nextMinMaxValues);
       reRenderedOnce.current = true;

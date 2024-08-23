@@ -4,5 +4,5 @@ export interface ValidatorRunner {
     validate(
         minValue: number,
         maxValue: number
-    ): IncorrectFieldName | undefined
+    ): [IncorrectFieldName, string] | undefined
 }

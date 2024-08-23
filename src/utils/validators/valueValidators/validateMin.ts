@@ -4,9 +4,16 @@ import { IncorrectFieldName } from "../../../components/counterSettings/counterS
 export class ValidateMin implements Validator {
     incorrectFieldName: IncorrectFieldName;
     lowestAllowedValue: number;
-    constructor(incFieldName: IncorrectFieldName, lowestAllVal: number) {
+    errorText: string;
+
+    constructor(
+      incFieldName: IncorrectFieldName,
+      lowestAllVal: number,
+      errorText: string
+    ) {
         this.incorrectFieldName = incFieldName;
         this.lowestAllowedValue = lowestAllVal;
+        this.errorText = errorText;
     }
     // Don't wanna separate this check from the others
     // now, even tho it is slightly different,
@@ -15,7 +22,7 @@ export class ValidateMin implements Validator {
       return minValue < this.lowestAllowedValue;
     }
   
-    getIncorrectFieldName() {
-      return this.incorrectFieldName;
+    getIncorrectFieldNameAndErrorText(): [IncorrectFieldName, string] {
+      return [this.incorrectFieldName, this.errorText];
     }
 }

@@ -17,9 +17,9 @@ import { MIN_ALLOWED_VALUE } from './utils/validators/valueValidators/constants'
 import { LocalStorageRepo } from './repo/localStorageRepo';
 
 const validatorRunner = new valueValidatorRunner([
-  new ValidateMin(MIN, MIN_ALLOWED_VALUE),
-  new ValidateMax(MAX),
-  new ValidateBoth(BOTH)
+  new ValidateMin(MIN, MIN_ALLOWED_VALUE, 'Min value cannot be less than zero'),
+  new ValidateMax(MAX, 'Max value cannot be less than min value'),
+  new ValidateBoth(BOTH, 'Min value cannot be equal to max value')
 ])
 
 const repoObj = new LocalStorageRepo;

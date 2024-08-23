@@ -12,10 +12,10 @@ export class valueValidatorRunner implements ValidatorRunner {
     validate(
         minValue: number,
         maxValue: number
-    ): IncorrectFieldName | undefined {
+    ): [IncorrectFieldName, string] | undefined {
       for (const validator of this.validators) {
           const valuesAreInvalid = validator.validateValues(minValue, maxValue);
-          if (valuesAreInvalid) return validator.getIncorrectFieldName();
+          if (valuesAreInvalid) return validator.getIncorrectFieldNameAndErrorText();
       }
       return;
     }
