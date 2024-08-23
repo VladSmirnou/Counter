@@ -3,6 +3,7 @@ import { MIN, MAX, BOTH } from './constants';
 import { Repo } from './repoInterface';
 import { ErrorType } from '../../App';
 import { ValidatorRunner } from './validatorRunnerInt';
+import { CssClassNameBuilder } from '../../utils/classNameBulder';
 
 export type IncorrectFieldName = (
     typeof MIN |
@@ -17,7 +18,7 @@ export type CounterSettingsPropsType = {
     setSettingsModeOn: (v: boolean) => void
     repo: Repo
     incorrectFieldName: IncorrectFieldName | undefined
-    setErrorData: (d: ErrorType|null) => void,
+    setErrorData: (d: ErrorType|null) => void
     validatorRunner: ValidatorRunner
+    getCSSClassNameBuilder: (baseClass: string) => CssClassNameBuilder
 }
-

@@ -15,6 +15,7 @@ import { ValidateBoth } from './utils/validators/valueValidators/validateBoth';
 import { MIN, MAX, BOTH, STORED_VALUES } from './components/counterSettings/constants';
 import { MIN_ALLOWED_VALUE } from './utils/validators/valueValidators/constants';
 import { LocalStorageRepo } from './repo/localStorageRepo';
+import { CssClassNameBuilder } from './utils/classNameBulder';
 
 const validatorRunner = new valueValidatorRunner([
   new ValidateMin(MIN, MIN_ALLOWED_VALUE, 'Min value cannot be less than zero'),
@@ -23,6 +24,8 @@ const validatorRunner = new valueValidatorRunner([
 ])
 
 const repoObj = new LocalStorageRepo;
+
+const getCSSClassNameBuilder = (baseClass: string) => new CssClassNameBuilder(baseClass);
 
 export type ErrorType = {
   error: string
@@ -61,10 +64,12 @@ function App() {
                         incorrectFieldName={errorData?.incorrectFieldName}
                         setErrorData={setErrorData}
                         validatorRunner={validatorRunner}
+                        getCSSClassNameBuilder={getCSSClassNameBuilder}
                         />
         <Counter minMaxCounterV={minMaxCounterV}
                 settingsModeOn={settingsModeOn}
                 error={errorData?.error}
+                getCSSClassNameBuilder={getCSSClassNameBuilder}
                 />
       </div>
     </div>

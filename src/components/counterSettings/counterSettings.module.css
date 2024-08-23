@@ -49,7 +49,7 @@
   justify-content: space-between;
 }
 
-input {
+.defaultInputClass {
   text-align: center;
   font-weight: bold;
   font-size: 15px;

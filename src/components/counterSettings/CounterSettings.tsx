@@ -14,7 +14,8 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
     repo,
     incorrectFieldName,
     setErrorData,
-    validatorRunner
+    validatorRunner,
+    getCSSClassNameBuilder
   }
 ) => {
   const [minMaxValues, setMinMaxValues] = useState<MinMaxCounterVType>(
@@ -67,17 +68,20 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
 
   const setButtonDisabled = !settingsModeOn || !!incorrectFieldName;
 
-  // TODO: refactor later
-  let maxInputClass: string = '';
-  let minInputClass: string = '';
+  const maxInputClassBuilder = getCSSClassNameBuilder(s.defaultInputClass);
+  const minInputClassBuilder = getCSSClassNameBuilder(s.defaultInputClass);
+
+  // TODO: this is still not good enough, refactor later
   if (incorrectFieldName === BOTH) {
-    maxInputClass = s.incorrect;
-    minInputClass = s.incorrect;
+    maxInputClassBuilder.addClass(s.incorrect);
+    minInputClassBuilder.addClass(s.incorrect);
   } else if (incorrectFieldName === MAX) {
-    maxInputClass = s.incorrect;
+    maxInputClassBuilder.addClass(s.incorrect);
   } else if (incorrectFieldName === MIN) {
-    minInputClass = s.incorrect;
+    minInputClassBuilder.addClass(s.incorrect);
   }
+  const maxInputClass = maxInputClassBuilder.build();
+  const minInputClass = minInputClassBuilder.build();
 
   return (
     <div className={s.counterSettingsBlock}>

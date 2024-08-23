@@ -13,6 +13,7 @@ export const Counter: React.FC<CounterPropsType> = (
     },
     settingsModeOn,
     error,
+    getCSSClassNameBuilder
   }
 ) => {
   const [counterValue, setCounterValue] = useState<number>(minCounterValue);
@@ -39,6 +40,7 @@ export const Counter: React.FC<CounterPropsType> = (
                   counterV_lt_MaxV={counterV_lt_MaxV}
                   settingsModeOn={settingsModeOn}
                   error={error}
+                  getCSSClassNameBuilder={getCSSClassNameBuilder}
                   />
       <div className={s.flexWrapper}>
         <Button disabled={incButtonDisabled}
