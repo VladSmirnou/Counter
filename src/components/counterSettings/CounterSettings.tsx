@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import s from './counterSettings.module.css';
 import { Button } from '../button/Button';
 import { MIN, MAX, BOTH, STORED_VALUES } from './constants';
@@ -22,6 +22,9 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   const [minMaxValues, setMinMaxValues] = useState<MinMaxCounterVType>(
     minMaxCounterV
   );
+  // I want to allow one re-render after a user typed incorrect values, so
+  // that it can see those values.
+  const reRenderedOnce = useRef<boolean>(false);
 
   useEffect(() => {
     setMinMaxValues(minMaxCounterV);
@@ -37,17 +40,23 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
     const incorrectFieldName = validatorRunner.validate(
       nextMinMaxValues.minCounterValue, nextMinMaxValues.maxCounterValue
     )
-    if (incorrectFieldName) {
+    if (incorrectFieldName && reRenderedOnce.current) {
+      return;
+    }
+    else if (incorrectFieldName && !reRenderedOnce.current) {
       setErrorData({
         error: INCORRECT_VALUE_ERROR_TEXT,
         incorrectFieldName: incorrectFieldName === BOTH ? incorrectFieldName
           : e.currentTarget.name as IncorrectFieldName
       })
+      setMinMaxValues(nextMinMaxValues);
+      reRenderedOnce.current = true;
     } else {
       setErrorData(null);
       setSettingsModeOn(true);
+      setMinMaxValues(nextMinMaxValues);
+      reRenderedOnce.current = false;
     }
-    setMinMaxValues(nextMinMaxValues);
   }
 
   const onSetMinMaxCounterHandler = () => {
