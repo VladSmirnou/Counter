@@ -21,13 +21,17 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   const [minMaxValues, setMinMaxValues] = useState<MinMaxCounterVType>(
     minMaxCounterV
   );
+  const [prevMinMaxVal, setPrevMinMaxVal] = useState<MinMaxCounterVType>(minMaxCounterV);
+
   // I want to allow one re-render after a user typed incorrect values, so
-  // that it can see those values.
+  // that it can see these values.
   const reRenderedOnce = useRef<boolean>(false);
 
-  useEffect(() => {
+  if (!Object.is(prevMinMaxVal, minMaxCounterV)) {
+    setPrevMinMaxVal(minMaxCounterV);
     setMinMaxValues(minMaxCounterV);
-  }, [minMaxCounterV]);
+    return null;
+  }
 
   const onChangeMinMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const nextMinMaxValues = {
@@ -58,6 +62,7 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
       setMinMaxValues(nextMinMaxValues);
       reRenderedOnce.current = false;
     }
+    return;
   }
 
   const onSetMinMaxCounterHandler = () => {

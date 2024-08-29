@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '../button/Button';
 import { Scoreboard } from '../scoreboard/Scoreboard';
 import s from './Counter.module.css';
@@ -17,10 +17,13 @@ export const Counter: React.FC<CounterPropsType> = (
   }
 ) => {
   const [counterValue, setCounterValue] = useState<number>(minCounterValue);
+  const [prevMinVal, setPrevMinVal] = useState<number>(minCounterValue);
 
-  useEffect(() => {
+  if (!Object.is(prevMinVal, minCounterValue)) {
+    setPrevMinVal(minCounterValue);
     setCounterValue(minCounterValue);
-  }, [minCounterValue]);
+    return null;
+  }
 
   const incrementCounterValue = () => {
     if (counterV_lt_MaxV) setCounterValue(counterValue + 1);
