@@ -21,4 +21,5 @@ export type CounterSettingsPropsType = {
     setErrorData: (d: ErrorType|null) => void
     validatorRunner: ValidatorRunner
     getCSSClassNameBuilder: (baseClass: string) => CssClassNameBuilder
+    error: boolean
 }

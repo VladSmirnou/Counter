@@ -51,7 +51,7 @@ function App() {
   );
 
   const [settingsModeOn, setSettingsModeOn] = useState<boolean>(false);
-  const [errorData, setErrorData] = useState<ErrorType|null>(null);
+  const [errorData, setErrorData] = useState<ErrorType | null>(null);
 
   return (
     <div className="App">
@@ -63,6 +63,7 @@ function App() {
                         repo={repoObj}
                         incorrectFieldName={errorData?.incorrectFieldName}
                         setErrorData={setErrorData}
+                        error={!!errorData}
                         validatorRunner={validatorRunner}
                         getCSSClassNameBuilder={getCSSClassNameBuilder}
                         />

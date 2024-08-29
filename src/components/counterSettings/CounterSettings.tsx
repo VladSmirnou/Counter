@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import s from './counterSettings.module.css';
 import { Button } from '../button/Button';
 import { MIN, MAX, BOTH, STORED_VALUES } from './constants';
@@ -15,7 +15,8 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
     incorrectFieldName,
     setErrorData,
     validatorRunner,
-    getCSSClassNameBuilder
+    getCSSClassNameBuilder,
+    error
   }
 ) => {
   const [minMaxValues, setMinMaxValues] = useState<MinMaxCounterVType>(
@@ -23,16 +24,12 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
   );
   const [prevMinMaxVal, setPrevMinMaxVal] = useState<MinMaxCounterVType>(minMaxCounterV);
 
-  // I want to allow one re-render after a user typed incorrect values, so
-  // that it can see these values.
-  const reRenderedOnce = useRef<boolean>(false);
-
   if (!Object.is(prevMinMaxVal, minMaxCounterV)) {
     setPrevMinMaxVal(minMaxCounterV);
     setMinMaxValues(minMaxCounterV);
     return null;
   }
-
+  
   const onChangeMinMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const nextMinMaxValues = {
       ...minMaxValues,
@@ -44,23 +41,23 @@ export const CounterSettings: React.FC<CounterSettingsPropsType> = (
       nextMinMaxValues.minCounterValue, nextMinMaxValues.maxCounterValue
     )
 
-    if (incorrectFieldData && reRenderedOnce.current) {
+    if (incorrectFieldData && error) {
       return;
     }
-    else if (incorrectFieldData && !reRenderedOnce.current) {
+    else if (incorrectFieldData && !error) {
       const [incorrectFieldName, errorText] = incorrectFieldData;
-
+      
       setErrorData({
         error: errorText,
         incorrectFieldName: incorrectFieldName
       })
+      // I want to set incorrect values to the state once, so
+      // that the user can see these values.
       setMinMaxValues(nextMinMaxValues);
-      reRenderedOnce.current = true;
     } else {
       setErrorData(null);
       setSettingsModeOn(true);
       setMinMaxValues(nextMinMaxValues);
-      reRenderedOnce.current = false;
     }
     return;
   }
